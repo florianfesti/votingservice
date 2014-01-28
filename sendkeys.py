@@ -8,21 +8,18 @@ random.seed(0)
 def genkey(l):
     return "".join((random.choice(string.letters) for i in xrange(l)))
 
-def mixparts(parts):
-    l = len(parts[0])
+def mixhashes(hashes):
+    l = len(hashes)
     order = range(l)
     random.shuffle(order)
     result = []
-    for p in parts:
-        pnew = []
-        for n in order:
-            pnew.append(p[n])
-        result.append(pnew)
+    for n in order:
+        result.append(hashes[n])
     return result
 
-def sendpart(part, address):
+def sendhashes(hashes, address):
     print address
-    print "\n".join(part)
+    print "\n".join(hashes)
     print
 
 if len(sys.argv) != 2:
@@ -34,17 +31,15 @@ TEXT
 %s
 
 """
-
-parts = [[],[],[]]
+hashes = []
 for line in open(sys.argv[1]):
-    key = ""
-    for p in parts:
-        keypart = genkey(8)
-        p.append(keypart)
-        key += keypart
-    print line, key
+    key = genkey(32)
+    hash = hashlib.sha1(key).hexdigest()
+    hashes.append(hash)
+    hashes.append('\n')
+    print line, key, hash
 
-parts = mixparts(parts)
-
-for p in parts:
-    sendpart(p, "foo@example.com")
+mixhashes(hashes)
+f = open("hashes.txt", "w")
+f.writelines(hashes)
+f.close()
