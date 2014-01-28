@@ -34,11 +34,18 @@ class VotingApp:
     def __init__(self, optionsfile, hashfile, resultfile):
         self.hashes = set()
         self.options = []
-        self.resultfile = open(resultfile, "a")
         for line in open(hashfile):
             self.hashes.add(line[:-1])
+        try:
+            for line in open(resultfile):
+                pass
+                #self.hashes.discard(line.split()[0])
+        except IOError:
+            pass
         for line in open(optionsfile):
             self.options.append(line[:-1])
+
+        self.resultfile = open(resultfile, "a")
 
         self.keyre = re.compile(r'^[a-zA-Z]+$')
         self.html = html % (
