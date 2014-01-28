@@ -1,9 +1,16 @@
 #!/bin/python
 
-import sys, random, string, hashlib
+import sys, string, hashlib
+import random as _random
+# XXX set to False before use
+DEBUG=True
 
-# XXX remove before use
-random.seed(0)
+if DEBUG:
+    random = _random
+    random.seed(0)
+    print "###################\nWARNING: DEBUG=True\n###################"
+else:
+    random = _random.SystemRandom()
 
 def genkey(l):
     return "".join((random.choice(string.letters) for i in xrange(l)))
