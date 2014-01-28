@@ -15,15 +15,6 @@ else:
 def genkey(l):
     return "".join((random.choice(string.letters) for i in xrange(l)))
 
-def mixhashes(hashes):
-    l = len(hashes)
-    order = range(l)
-    random.shuffle(order)
-    result = []
-    for n in order:
-        result.append(hashes[n])
-    return result
-
 def sendhashes(hashes, address):
     print address
     print "\n".join(hashes)
@@ -43,10 +34,11 @@ for line in open(sys.argv[1]):
     key = genkey(32)
     hash = hashlib.sha1(key).hexdigest()
     hashes.append(hash)
-    hashes.append('\n')
     print line, key, hash
 
-mixhashes(hashes)
+random.shuffle(hashes)
+
 f = open("hashes.txt", "w")
-f.writelines(hashes)
+for h in hashes:
+    f.write(h + '\n')
 f.close()
