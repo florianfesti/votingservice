@@ -1,21 +1,19 @@
 #!/bin/python
 
-import sys, random, string, hashlib
+import sys, string, hashlib
+import random as _random
+# XXX set to False before use
+DEBUG=True
 
-# XXX remove before use
-random.seed(0)
+if DEBUG:
+    random = _random
+    random.seed(0)
+    print "###################\nWARNING: DEBUG=True\n###################"
+else:
+    random = _random.SystemRandom()
 
 def genkey(l):
     return "".join((random.choice(string.letters) for i in xrange(l)))
-
-def mixhashes(hashes):
-    l = len(hashes)
-    order = range(l)
-    random.shuffle(order)
-    result = []
-    for n in order:
-        result.append(hashes[n])
-    return result
 
 def sendhashes(hashes, address):
     print address
@@ -24,6 +22,7 @@ def sendhashes(hashes, address):
 
 if len(sys.argv) != 2:
     print "Usage sendkeys.py emailfile"
+    sys.exit(1)
 
 m = """
 TEXT
@@ -36,10 +35,11 @@ for line in open(sys.argv[1]):
     key = genkey(32)
     hash = hashlib.sha1(key).hexdigest()
     hashes.append(hash)
-    hashes.append('\n')
     print line, key, hash
 
-mixhashes(hashes)
+random.shuffle(hashes)
+
 f = open("hashes.txt", "w")
-f.writelines(hashes)
+for h in hashes:
+    f.write(h + '\n')
 f.close()
