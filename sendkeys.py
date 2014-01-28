@@ -22,6 +22,7 @@ def sendhashes(hashes, address):
 
 if len(sys.argv) != 2:
     print "Usage sendkeys.py emailfile"
+    sys.exit(1)
 
 m = """
 TEXT
